@@ -1,3 +1,4 @@
+#include "wx/sizer.h"
 #include <wx/wx.h>
 
 enum ID{
@@ -7,8 +8,11 @@ enum ID{
 
 class MainMenuFrame : public wxFrame{
   public:
-    MainMenuFrame(wxString & title);
+    MainMenuFrame(const wxString & title);
   private:
+    wxBoxSizer * mainSizer;
+    wxBoxSizer * panelSizer;
+    wxPanel * panel;
     wxTextCtrl * mob;
     wxTextCtrl * pwd;
     wxButton * Login;
