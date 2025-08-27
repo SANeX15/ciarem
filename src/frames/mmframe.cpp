@@ -47,5 +47,6 @@ MainMenuFrame::MainMenuFrame(const wxString & title)
 
 void MainMenuFrame::OnLogin(wxCommandEvent & evt){
   // create a dialog box for now
-  wxMessageDialog(this,"hehe");
+  wxMessageDialog dialog(this,"hehe");
+  dialog.ShowModal();
 }
