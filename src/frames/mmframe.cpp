@@ -1,8 +1,6 @@
 #include "../libs/mmframe.h"
 #include "../libs/app.h"
-#include "wx/gdicmn.h"
-#include "wx/sizer.h"
-#include "wx/stringimpl.h"
+#include "../libs/db.h"
 
 wxString mmtitle = "Login";
 
@@ -46,7 +44,10 @@ MainMenuFrame::MainMenuFrame(const wxString & title)
 }
 
 void MainMenuFrame::OnLogin(wxCommandEvent & evt){
-  // create a dialog box for now
-  wxMessageDialog dialog(this,"hehe");
-  dialog.ShowModal();
+  wxString uname = mob->GetValue();
+  wxString passwd = pwd->GetValue();
+  std::shared_ptr<sql::Connection> conn = db::connect();
+  if (db::userAuth(conn,uname,passwd) == true){
+    
+  }
 }

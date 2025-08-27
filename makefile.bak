@@ -7,9 +7,6 @@
 #
 # Updated to use shared wxWidgets libraries to avoid static build warnings.
 # Now includes a fix to create subdirectories within the build folder.
-#
-# NOTE: This version is updated to include explicit include and library paths
-# for the MariaDB C++ connector based on your system configuration.
 #=============================================================================
 
 # --- Project Configuration ---
@@ -36,9 +33,9 @@ CXX = g++
 WX_CFLAGS := $(shell wx-config --cxxflags --unicode=yes)
 WX_LIBS := $(shell wx-config --libs --unicode=yes)
 
-# Use mariadb_config to get flags for the MariaDB C connector, and add the C++ flags manually.
-DB_CFLAGS := $(shell mariadb_config --cflags) -I/usr/local/include/mariadb/
-DB_LIBS := $(shell mariadb_config --libs) -L/mariadb/ -lmariadbcpp
+# Use mysql_config or mariadb_config to get the flags for the database connector.
+DB_CFLAGS := $(shell mysql_config --cflags)
+DB_LIBS := $(shell mysql_config --libs)
 
 # Final flags for compilation and linking.
 CXXFLAGS = $(WX_CFLAGS) $(DB_CFLAGS) -std=c++11 -Wall
@@ -46,7 +43,7 @@ LDFLAGS = $(WX_LIBS) $(DB_LIBS)
 
 # VPATH tells Make where to find source files.
 # This makes it easier for Make to find the dependencies.
-VPATH = $(SRC_DIR):$(SRC_DIR)/frames:$(SRC_DIR)/libs:$(SRC_DIR)/db
+VPATH = $(SRC_DIR):$(SRC_DIR)/frames:$(SRC_DIR)/libs
 
 # --- Build Rules ---
 # The default rule. Builds the project by first creating the build directory.
@@ -85,4 +82,3 @@ run: all
 	./$(BUILD_DIR)/$(EXECUTABLE)
 
 .PHONY: all clean run
-
