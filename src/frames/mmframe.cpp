@@ -44,8 +44,8 @@ MainMenuFrame::MainMenuFrame(const wxString & title)
 }
 
 void MainMenuFrame::OnLogin(wxCommandEvent & evt){
-  wxString uname = mob->GetValue();
-  wxString passwd = pwd->GetValue();
+  std::string uname = mob->GetValue().ToStdString();
+  std::string passwd = pwd->GetValue().ToStdString();
   std::shared_ptr<sql::Connection> conn = db::connect();
   if (db::userAuth(conn,uname,passwd) == true){
     
