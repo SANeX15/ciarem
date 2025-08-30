@@ -48,6 +48,7 @@ void MainMenuFrame::OnLogin(wxCommandEvent & evt){
   std::string passwd = pwd->GetValue().ToStdString();
   std::shared_ptr<sql::Connection> conn = db::connect();
   if (db::userAuth(conn,uname,passwd) == true){
-    
+    wxMessageDialog d(this,"login success");
+    d.ShowModal();
   }
 }

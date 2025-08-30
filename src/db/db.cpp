@@ -1,4 +1,3 @@
-#include <mariadb/conncpp.hpp>
 #include "../libs/db-conf.h"
 #include "../libs/db.h"
 
@@ -33,7 +32,7 @@ void disconnect(std::shared_ptr<sql::Connection>& conn) {
     }
 }
 
-bool userAuth(std::shared_ptr<sql::Connection>& conn, std::string * uname, std::string * passwd){
+bool userAuth(std::shared_ptr<sql::Connection>& conn, std::string & uname, std::string & passwd){
   try {
       // create a statement
       std::unique_ptr<sql::Statement> stmt(conn->createStatement());
@@ -47,7 +46,7 @@ bool userAuth(std::shared_ptr<sql::Connection>& conn, std::string * uname, std::
         dbUname = res->getString("username").c_str();
         dbPasswd = res->getString("password").c_str();
       }
-      if (*uname == dbUname && *passwd == dbPasswd) {
+      if (uname == dbUname && passwd == dbPasswd) {
         return true;
       }
       else {
