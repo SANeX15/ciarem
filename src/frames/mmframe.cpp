@@ -48,7 +48,13 @@ void MainMenuFrame::OnLogin(wxCommandEvent & evt){
   std::string uname = mob->GetValue().ToStdString();
   std::string passwd = pwd->GetValue().ToStdString();
   std::shared_ptr<sql::Connection> conn = db::connect();
-  wxString msg = (db::userAuth(conn,uname,passwd)== true)?"login success":"login failed";
+  wxString msg;
+  if (conn == NULL){
+    msg = "db uninit";
+  }
+  else {
+    msg = (db::userAuth(conn,uname,passwd)== true)?"login success":"login failed";
+  }
   wxMessageDialog d(this,msg);
   d.ShowModal();
 }
