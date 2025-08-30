@@ -1,11 +1,9 @@
-#include "../libs/loginFrame.hpp"
+#include "../libs/allFrames.hpp"
 #include "../libs/app.hpp"
 #include "../libs/db.hpp"
 
-wxString mmtitle = "Login";
-
-LoginFrame::LoginFrame(const wxString & title)
-              :wxFrame(nullptr, crm_mm, title + " - " + mmtitle)
+LoginFrame::LoginFrame()
+              :wxFrame(nullptr, crm_login, "Login - " + appName)
 {
   // create the parent container organiser
   mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -25,7 +23,7 @@ LoginFrame::LoginFrame(const wxString & title)
   panelSizer->Add(pwd, 0, wxEXPAND | wxALL, 10);
 
   // create button control
-  Login = new wxButton(panel, wxID_ANY, "Login", wxDefaultPosition, wxDefaultSize);
+  Login = new wxButton(panel, LoginBtn, "Login", wxDefaultPosition, wxDefaultSize);
 
   // place button control in panel
   panelSizer->Add(Login, 0, wxEXPAND | wxALL, 10);

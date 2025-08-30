@@ -1,7 +1,10 @@
 #include <wx/wx.h>
 
+extern wxString appName;
+
 enum wndID{
-  crm_mm
+  crm_login,
+  crm_dash
 };
 
 class CRM_App : public wxApp{

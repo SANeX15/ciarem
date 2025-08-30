@@ -1,13 +1,13 @@
+#include "wx/sizer.h"
 #include <wx/wx.h>
 
 enum ID{
-  crm_Login_ID,
-  crm_Quit_ID
+  LoginBtn
 };
 
 class LoginFrame : public wxFrame{
   public:
-    LoginFrame(const wxString & title);
+    LoginFrame();
   private:
     wxBoxSizer * mainSizer;
     wxBoxSizer * panelSizer;
@@ -18,5 +18,11 @@ class LoginFrame : public wxFrame{
     wxButton * Quit;
     
     void OnLogin(wxCommandEvent & evt);
-    void OnQuit(wxCommandEvent & evt);
+};
+
+class DashFrame : public wxFrame{
+  public:
+    DashFrame(const wxString & user);
+  private:
+    wxBoxSizer * mainSizer;
 };
