@@ -1,4 +1,3 @@
-#include "wx/sizer.h"
 #include <wx/wx.h>
 
 enum ID{
@@ -6,9 +5,9 @@ enum ID{
   crm_Quit_ID
 };
 
-class MainMenuFrame : public wxFrame{
+class LoginFrame : public wxFrame{
   public:
-    MainMenuFrame(const wxString & title);
+    LoginFrame(const wxString & title);
   private:
     wxBoxSizer * mainSizer;
     wxBoxSizer * panelSizer;

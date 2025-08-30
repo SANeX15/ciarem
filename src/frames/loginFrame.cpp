@@ -1,11 +1,10 @@
-#include "../libs/mmframe.h"
-#include "../libs/app.h"
-#include "../libs/db.h"
-#include "wx/string.h"
+#include "../libs/loginFrame.hpp"
+#include "../libs/app.hpp"
+#include "../libs/db.hpp"
 
 wxString mmtitle = "Login";
 
-MainMenuFrame::MainMenuFrame(const wxString & title)
+LoginFrame::LoginFrame(const wxString & title)
               :wxFrame(nullptr, crm_mm, title + " - " + mmtitle)
 {
   // create the parent container organiser
@@ -41,20 +40,22 @@ MainMenuFrame::MainMenuFrame(const wxString & title)
   this->SetSizerAndFit(mainSizer);
 
   // Tell Login to call a func when clicked
-  Login->Bind(wxEVT_BUTTON, &MainMenuFrame::OnLogin, this);
+  Login->Bind(wxEVT_BUTTON, &LoginFrame::OnLogin, this);
 }
 
-void MainMenuFrame::OnLogin(wxCommandEvent & evt){
+void LoginFrame::OnLogin(wxCommandEvent & evt){
   std::string uname = mob->GetValue().ToStdString();
   std::string passwd = pwd->GetValue().ToStdString();
   std::shared_ptr<sql::Connection> conn = db::connect();
   wxString msg;
+
   if (conn == NULL){
     msg = "db uninit";
   }
   else {
     msg = (db::userAuth(conn,uname,passwd)== true)?"login success":"login failed";
   }
+  
   wxMessageDialog d(this,msg);
   d.ShowModal();
 }

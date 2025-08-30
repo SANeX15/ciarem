@@ -1,11 +1,11 @@
-#include "libs/app.h"
-#include "libs/mmframe.h"
+#include "libs/app.hpp"
+#include "libs/loginFrame.hpp"
 
 wxIMPLEMENT_APP(CRM_App);
 
 bool CRM_App::OnInit(){
   // Create a new instance of the MainMenuFrame
-  MainMenuFrame * mmf = new MainMenuFrame("CIAREM");
+  LoginFrame * mmf = new LoginFrame("CIAREM");
 
   // Show the main window. This is the critical step to avoid the segmentation fault.
   mmf->Show(true);

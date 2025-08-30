@@ -1,4 +1,4 @@
-#include "../libs/db-conf.h"
+#include "../libs/db-conf.hpp"
 
 namespace dbCred {
   const std::string getUser() {
@@ -10,7 +10,7 @@ namespace dbCred {
   }
 
   const std::string getUrl() {
-    return "mariadb://localhost:3306";
+    return "jdbc:mariadb://localhost:3306/";
   }
 
   const std::string getDbName() {

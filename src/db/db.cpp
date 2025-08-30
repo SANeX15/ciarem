@@ -1,5 +1,5 @@
-#include "../libs/db-conf.h"
-#include "../libs/db.h"
+#include "../libs/db-conf.hpp"
+#include "../libs/db.hpp"
 
 namespace db {
 
@@ -9,15 +9,14 @@ std::shared_ptr<sql::Connection> connect() {
       sql::Driver *driver = sql::mariadb::get_driver_instance();
 
       // setup the options to connect to the db
-      sql::ConnectOptionsMap connectionOptions;
-      connectionOptions["host"] = "localhost";
-      connectionOptions["port"] = "3306";
-      connectionOptions["user"] = dbCred::getUser();
-      connectionOptions["password"] = dbCred::getPwd();
-      connectionOptions["db"] = dbCred::getDbName();
+      sql::SQLString url = dbCred::getUrl() + dbCred::getDbName();
+      sql::Properties props({
+        {"user",dbCred::getUser()},
+        {"password",dbCred::getPwd()}
+      });
 
       // if it is succesful, return it
-      return std::shared_ptr<sql::Connection>(driver->connect(connectionOptions));
+      return std::shared_ptr<sql::Connection>(driver->connect(url,props));
     }
     catch (sql::SQLException & e){
       // else return a null
