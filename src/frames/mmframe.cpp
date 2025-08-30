@@ -1,6 +1,7 @@
 #include "../libs/mmframe.h"
 #include "../libs/app.h"
 #include "../libs/db.h"
+#include "wx/string.h"
 
 wxString mmtitle = "Login";
 
@@ -47,8 +48,8 @@ void MainMenuFrame::OnLogin(wxCommandEvent & evt){
   std::string uname = mob->GetValue().ToStdString();
   std::string passwd = pwd->GetValue().ToStdString();
   std::shared_ptr<sql::Connection> conn = db::connect();
-  if (db::userAuth(conn,uname,passwd) == true){
-    wxMessageDialog d(this,"login success");
-    d.ShowModal();
-  }
+  wxString msg;
+  wxMessageDialog d(this,msg);
+  msg = (db::userAuth(conn,uname,passwd)== true)?"login success":"login failed";
+  d.ShowModal();
 }

@@ -11,16 +11,11 @@ EXECUTABLE = ciarem_exec
 BUILD_DIR = build
 SRC_DIR = src
 
-# The directories containing your source files.
-SRC_DIRS = $(SRC_DIR) $(SRC_DIR)/frames $(SRC_DIR)/db
-
-# Automatically find all C++ source files in the specified directories.
-SOURCES = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
+# Automatically find all C++ source files in the source directory and its subdirectories.
+SOURCES = $(shell find $(SRC_DIR) -name "*.cpp")
 
 # Create a list of object files from the source files, placing them in the build directory.
 OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
-OBJECTS += $(patsubst $(SRC_DIR)/frames/%.cpp,$(BUILD_DIR)/frames/%.o,$(filter $(SRC_DIR)/frames/%.cpp,$(SOURCES)))
-OBJECTS += $(patsubst $(SRC_DIR)/db/%.cpp,$(BUILD_DIR)/db/%.o,$(filter $(SRC_DIR)/db/%.cpp,$(SOURCES)))
 
 # --- Compiler and Linker Flags ---
 # The C++ compiler to use.
@@ -40,7 +35,7 @@ LDFLAGS = $(WX_LIBS) $(DB_LIBS)
 
 # VPATH tells Make where to find source files.
 # This makes it easier for Make to find the dependencies.
-VPATH = $(SRC_DIRS)
+VPATH = $(SRC_DIR)
 
 # --- Build Rules ---
 # The default rule. Builds the project by first creating the build directory.
