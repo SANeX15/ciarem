@@ -6,11 +6,15 @@ wxString appName = "CIAREM";
 wxIMPLEMENT_APP(CRM_App);
 
 bool CRM_App::OnInit(){
-  // Create a new instance of the MainMenuFrame
-  LoginFrame * lf = new LoginFrame();
+  // Create a new instance of the LoginFrame
+  // LoginFrame * lf = new LoginFrame();
+
+  DashFrame * df = new DashFrame("user");
 
   // Show the main window. This is the critical step to avoid the segmentation fault.
-  lf->Show(true);
+  // lf->Show(true);
+
+  df->Show();
 
   // Return true to indicate that the application should start its main event loop
   return true;

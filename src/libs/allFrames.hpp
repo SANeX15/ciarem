@@ -2,7 +2,11 @@
 #include <wx/wx.h>
 
 enum ID{
-  LoginBtn
+  LoginBtn,
+  AddCustBtn,
+  AddEntryBtn,
+  AddSvBtn,
+  ChkScrlBtn
 };
 
 class LoginFrame : public wxFrame{
@@ -24,5 +28,15 @@ class DashFrame : public wxFrame{
   public:
     DashFrame(const wxString & user);
   private:
-    wxBoxSizer * mainSizer;
+    wxGridSizer * mainSizer;
+    wxBoxSizer * actionsSizer;
+    wxPanel * userPanel,
+            * searchResults,
+            * actions;
+    wxTextCtrl * searchBar;
+    wxButton * AddCust,
+             * AddEntry,
+             * AddSv,
+             * ChkScrl;
+    wxStaticText * username;
 };

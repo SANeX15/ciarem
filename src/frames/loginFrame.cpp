@@ -36,7 +36,7 @@ LoginFrame::LoginFrame()
 
   // make mainSizer as the organiser of parent window (this)
   this->SetSizerAndFit(mainSizer);
-
+  this->SetSize(350,400);
   // Tell Login to call a func when clicked
   Login->Bind(wxEVT_BUTTON, &LoginFrame::OnLogin, this);
 }
