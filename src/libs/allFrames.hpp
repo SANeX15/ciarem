@@ -1,4 +1,3 @@
-#include "wx/sizer.h"
 #include <wx/wx.h>
 
 enum ID{
@@ -13,13 +12,13 @@ class LoginFrame : public wxFrame{
   public:
     LoginFrame();
   private:
-    wxBoxSizer * mainSizer;
-    wxBoxSizer * panelSizer;
+    wxBoxSizer * mainSizer,
+               * panelSizer;
     wxPanel * panel;
-    wxTextCtrl * mob;
-    wxTextCtrl * pwd;
-    wxButton * Login;
-    wxButton * Quit;
+    wxTextCtrl * mob,
+               * pwd;
+    wxButton * Login,
+             * Quit;
     
     void OnLogin(wxCommandEvent & evt);
 };
@@ -28,17 +27,22 @@ class DashFrame : public wxFrame{
   public:
     DashFrame(const wxString & user);
   private:
-    wxGridSizer * mainSizer;
-    wxBoxSizer * actionsSizer,
+    wxMenuBar * mainBar;
+    wxMenu * UserMenu;
+    wxMenuItem * LogoutOpt;
+    wxBoxSizer * mainSizer,
+               * topSizer,
+               * bottomSizer,
                * userSizer;
-    wxPanel * userPanel,
+    wxPanel * searchPanel,
+            * userPanel,
             * searchResults,
-            * actions,
-            * searchBarPanel;
+            * actionsPanel;
     wxTextCtrl * searchBar;
+    wxStaticText * userMobile;
     wxButton * AddCust,
              * AddEntry,
              * AddSv,
-             * ChkScrl;
-    wxStaticText * username;
+             * ChkScrl,
+             * LogoutBtn;
 };
