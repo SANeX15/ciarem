@@ -29,10 +29,12 @@ class DashFrame : public wxFrame{
     DashFrame(const wxString & user);
   private:
     wxGridSizer * mainSizer;
-    wxBoxSizer * actionsSizer;
+    wxBoxSizer * actionsSizer,
+               * userSizer;
     wxPanel * userPanel,
             * searchResults,
-            * actions;
+            * actions,
+            * searchBarPanel;
     wxTextCtrl * searchBar;
     wxButton * AddCust,
              * AddEntry,

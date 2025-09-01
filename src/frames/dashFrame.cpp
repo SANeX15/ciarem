@@ -12,10 +12,12 @@ DashFrame::DashFrame(const wxString & user)
       // create main container.
       mainSizer = new wxGridSizer(2,2,wxSize(10,10));
       // create 3 main panels.
+      searchResults = new wxPanel();
       userPanel = new wxPanel();
       searchResults = new wxPanel();
       actions = new wxPanel();
       // create 3 sizers for the above.
+      userSizer = new wxBoxSizer(wxVERTICAL);
       actionsSizer = new wxBoxSizer(wxVERTICAL);
       // create controls to fill up.
       searchBar = new wxTextCtrl(this,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);      AddCust = new wxButton(actions, AddCustBtn, "Add a Customer", wxDefaultPosition, wxDefaultSize);
@@ -27,12 +29,14 @@ DashFrame::DashFrame(const wxString & user)
       actionsSizer->Add(AddEntry, 0, wxEXPAND | wxALL, 10);
       actionsSizer->Add(AddSv, 0, wxEXPAND | wxALL, 10);
       actionsSizer->Add(ChkScrl, 0, wxEXPAND | wxALL, 10);
+
+      actions->SetSizer(actionsSizer);
+
       mainSizer->Add(searchBar, 0, wxEXPAND | wxALL, 10);
       mainSizer->Add(userPanel, 0, wxEXPAND | wxALL, 10);
       mainSizer->Add(searchResults, 0, wxEXPAND | wxALL, 10);
       mainSizer->Add(actions, 0, wxEXPAND | wxALL, 10);
 
-      actions->SetSizer(actionsSizer);
-      mainSizer->SetSizeHints(this);
+      this->SetSizerAndFit(mainSizer);
       this->SetSize(500,500);
 }
