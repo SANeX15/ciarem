@@ -1,9 +1,5 @@
 #include "../libs/allFrames.hpp"
 #include "../libs/app.hpp"
-#include "wx/gdicmn.h"
-#include "wx/generic/panelg.h"
-#include "wx/gtk/button.h"
-#include "wx/sizer.h"
 
 DashFrame::DashFrame(const wxString & user)
       :wxFrame(nullptr, crm_dash, "Dashboard - " + appName)
@@ -12,10 +8,9 @@ DashFrame::DashFrame(const wxString & user)
       // create main container.
       mainSizer = new wxGridSizer(2,2,wxSize(10,10));
       // create 3 main panels.
-      searchResults = new wxPanel();
-      userPanel = new wxPanel();
-      searchResults = new wxPanel();
-      actions = new wxPanel();
+      userPanel = new wxPanel(this);
+      searchResults = new wxPanel(this);
+      actions = new wxPanel(this);
       // create 3 sizers for the above.
       userSizer = new wxBoxSizer(wxVERTICAL);
       actionsSizer = new wxBoxSizer(wxVERTICAL);
