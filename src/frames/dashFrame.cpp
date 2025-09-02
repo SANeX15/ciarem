@@ -72,6 +72,8 @@ DashFrame::DashFrame(const wxString & user)
       mainBar = new wxMenuBar();
       UserMenu = new wxMenu();
       LogoutOpt = new wxMenuItem(UserMenu,wxID_ANY,"&LogOut\tCtrl+L","Logs out current user");
+      UserMenu->Append(LogoutOpt);
+      mainBar->Append(UserMenu,"&User");
       
       // Set the main sizer on the frame to manage its layout.
       this->SetMenuBar(mainBar);
