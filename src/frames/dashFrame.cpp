@@ -1,11 +1,17 @@
 #include "../libs/allFrames.hpp"
 #include "../libs/app.hpp"
+#include "wx/font.h"
+#include "wx/gdicmn.h"
 #include "wx/wx.h"
 
 DashFrame::DashFrame(const wxString & user)
       :wxFrame(nullptr, crm_dash, "Dashboard - " + appName)
       
 {
+      const wxSize btnSize = wxSize(-1,100);
+      wxFont btnFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+      wxFont lblFont(16,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_EXTRABOLD);
+      
       // Create main sizers for the top-level layout.
       mainSizer = new wxBoxSizer(wxVERTICAL);
       topSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -22,13 +28,18 @@ DashFrame::DashFrame(const wxString & user)
       searchBar->SetHint("Search Customers");
       
       // User Panel Controls
-      userMobile = new wxStaticText(userPanel, wxID_ANY, "mobile no");
+      userMobile = new wxStaticText(userPanel, wxID_ANY, user);
+      userMobile->SetFont(lblFont);
       
       // Actions Panel Controls
-      AddCust = new wxButton(actionsPanel, AddCustBtn, "Add a Customer");
-      AddEntry = new wxButton(actionsPanel, AddEntryBtn, "Add an Entry");
-      AddSv = new wxButton(actionsPanel, AddSvBtn, "Add a Service");
-      ChkScrl = new wxButton(actionsPanel, ChkScrlBtn, "Check Scroll");
+      AddCust = new wxButton(actionsPanel, AddCustBtn, "Add a Customer", wxDefaultPosition, btnSize);
+      AddCust->SetFont(btnFont);
+      AddEntry = new wxButton(actionsPanel, AddEntryBtn, "Add an Entry", wxDefaultPosition, btnSize);
+      AddEntry->SetFont(btnFont);
+      AddSv = new wxButton(actionsPanel, AddSvBtn, "Add a Service", wxDefaultPosition, btnSize);
+      AddSv->SetFont(btnFont);
+      ChkScrl = new wxButton(actionsPanel, ChkScrlBtn, "Check Scroll", wxDefaultPosition, btnSize);
+      ChkScrl->SetFont(btnFont);
 
       // Set up sizers for nested panels.
       searchSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -36,8 +47,9 @@ DashFrame::DashFrame(const wxString & user)
       searchPanel->SetSizer(searchSizer);
 
       userSizer = new wxBoxSizer(wxHORIZONTAL);
-      userSizer->Add(userMobile, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+      userSizer->Add(userMobile, 0, wxALIGN_CENTER | wxALL, 5);
       userPanel->SetSizer(userSizer);
+      userPanel->SetBackgroundColour(*wxRED);
       
       actionsSizer = new wxBoxSizer(wxVERTICAL);
       actionsSizer->Add(AddCust, 0, wxEXPAND | wxALL, 10);
