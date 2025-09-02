@@ -33,7 +33,9 @@ class DashFrame : public wxFrame{
     wxBoxSizer * mainSizer,
                * topSizer,
                * bottomSizer,
-               * userSizer;
+               * userSizer,
+               * searchSizer,
+               * actionsSizer;
     wxPanel * searchPanel,
             * userPanel,
             * searchResults,
@@ -43,6 +45,5 @@ class DashFrame : public wxFrame{
     wxButton * AddCust,
              * AddEntry,
              * AddSv,
-             * ChkScrl,
-             * LogoutBtn;
+             * ChkScrl;
 };

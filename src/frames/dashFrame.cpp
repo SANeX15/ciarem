@@ -1,5 +1,6 @@
 #include "../libs/allFrames.hpp"
 #include "../libs/app.hpp"
+#include "wx/wx.h"
 
 DashFrame::DashFrame(const wxString & user)
       :wxFrame(nullptr, crm_dash, "Dashboard - " + appName)
@@ -17,11 +18,11 @@ DashFrame::DashFrame(const wxString & user)
       actionsPanel = new wxPanel(this);
       
       // Create controls. Their parent should be the panel they reside on.
-      searchBar = new wxTextCtrl(searchPanel, wxID_ANY, "Search Customers", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+      searchBar = new wxTextCtrl(searchPanel, wxID_ANY,"", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+      searchBar->SetHint("Search Customers");
       
       // User Panel Controls
       userMobile = new wxStaticText(userPanel, wxID_ANY, "mobile no");
-      LogoutBtn = new wxButton(userPanel, wxID_ANY, "->", wxDefaultPosition, wxSize(35,-1));
       
       // Actions Panel Controls
       AddCust = new wxButton(actionsPanel, AddCustBtn, "Add a Customer");
@@ -30,15 +31,15 @@ DashFrame::DashFrame(const wxString & user)
       ChkScrl = new wxButton(actionsPanel, ChkScrlBtn, "Check Scroll");
 
       // Set up sizers for nested panels.
-      wxBoxSizer * searchSizer = new wxBoxSizer(wxHORIZONTAL);
+      searchSizer = new wxBoxSizer(wxHORIZONTAL);
       searchSizer->Add(searchBar, 1, wxEXPAND | wxALL, 5);
       searchPanel->SetSizer(searchSizer);
 
       userSizer = new wxBoxSizer(wxHORIZONTAL);
-      userSizer->Add(userMobile, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxALL, 5);
+      userSizer->Add(userMobile, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
       userPanel->SetSizer(userSizer);
       
-      wxBoxSizer * actionsSizer = new wxBoxSizer(wxVERTICAL);
+      actionsSizer = new wxBoxSizer(wxVERTICAL);
       actionsSizer->Add(AddCust, 0, wxEXPAND | wxALL, 10);
       actionsSizer->Add(AddEntry, 0, wxEXPAND | wxALL, 10);
       actionsSizer->Add(AddSv, 0, wxEXPAND | wxALL, 10);
