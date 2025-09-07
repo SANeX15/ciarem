@@ -1,7 +1,4 @@
 #include "../libs/allFrames.hpp"
-#include "wx/event.h"
-#include "wx/listbase.h"
-#include <string>
 
 CustFrame::CustFrame(wxWindow * parent)
           :wxFrame(parent, wxID_ANY, "Manage Customers")
@@ -10,21 +7,24 @@ CustFrame::CustFrame(wxWindow * parent)
   mainSizer = new wxBoxSizer(wxVERTICAL);
 
   searchBar = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
-  cListView = new wxListView(this);
+  cListView = new wxListView(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
 
   mainSizer->Add(searchBar, 0, wxALL | wxEXPAND,10);
   mainSizer->Add(cListView, 1, wxALL | wxEXPAND, 10);
   this->SetSizerAndFit(mainSizer);
 
+  // Bind the close event to the onClose handler
+  this->Bind(wxEVT_CLOSE_WINDOW, &CustFrame::onClose, this);
+
   custCols();
-  //pop();
+  pop();
   cListView->SetColumnWidth(1, wxLIST_AUTOSIZE_USEHEADER);
 }
 
 void CustFrame::custCols(){
-  cListView->AppendColumn("uid",wxLIST_FORMAT_LEFT,110);
-  cListView->AppendColumn("name",wxLIST_FORMAT_LEFT);
-  cListView->AppendColumn("dob",wxLIST_FORMAT_LEFT,90);
+  cListView->AppendColumn("uid", wxLIST_FORMAT_LEFT, 110);
+  cListView->AppendColumn("name", wxLIST_FORMAT_LEFT, wxLIST_AUTOSIZE_USEHEADER);
+  cListView->AppendColumn("dob", wxLIST_FORMAT_LEFT, 90);
 }
 
 void CustFrame::pop(){
