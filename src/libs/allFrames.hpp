@@ -7,7 +7,7 @@ enum ID{
   crm_dash_addBtn,
   crm_dash_svBtn,
   crm_dash_scrlBtn,
-  // custWnd,
+  custWnd,
   // addWnd,
   // svWnd,
   // scrlWnd,
@@ -46,7 +46,7 @@ class DashFrame : public wxFrame{
 
 class CustFrame : public wxFrame {
   public:
-    CustFrame();
+    CustFrame(wxWindow * parent);
     void custCols();
     void pop();
   private:

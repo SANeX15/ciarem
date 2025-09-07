@@ -1,17 +1,16 @@
 #include "../libs/allFrames.hpp"
-#include "wx/listctrl.h"
-#include "wx/string.h"
-#include <string>
 
-CustFrame::CustFrame(){
+CustFrame::CustFrame(wxWindow * parent)
+          :wxFrame(parent, custWnd, "Manage Customers")
+{
 
   mainSizer = new wxBoxSizer(wxVERTICAL);
 
-  // searchBar = new wxTextCtrl(this, wxID_ANY,"", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
-  // cListView = new wxListView();
+  searchBar = new wxTextCtrl(this, wxID_ANY,"", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+  cListView = new wxListView();
 
-  // mainSizer->Add(searchBar, 0, wxALL | wxEXPAND,10);
-  // mainSizer->Add(cListView, 0, wxALL | wxEXPAND, 10);
+  mainSizer->Add(searchBar, 0, wxALL | wxEXPAND,10);
+  mainSizer->Add(cListView, 0, wxALL | wxEXPAND, 10);
   this->SetSizerAndFit(mainSizer);
 
   // custCols();

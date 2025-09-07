@@ -1,6 +1,5 @@
 #include "../libs/allFrames.hpp"
 #include "../libs/app.hpp"
-#include "wx/event.h"
 
 DashFrame::DashFrame(const wxString & user)
       :wxFrame(nullptr, crm_dash, "Dashboard - " + appName)
@@ -45,20 +44,21 @@ DashFrame::DashFrame(const wxString & user)
 
 void DashFrame::onBtnClick(wxCommandEvent & evt){
       CustFrame * frm;
-      int id = evt.GetId();
-      switch (id) {
-            case crm_dash_addBtn:
-                  frm = new CustFrame();
-                  break;
-            case crm_dash_custBtn:
-                  break;
-            case crm_dash_svBtn:
-                  break;
-            case crm_dash_scrlBtn:
-                  break;
-            default :
-                  break;
-      }
+      // int id = evt.GetId();
+      // switch (id) {
+            // case crm_dash_addBtn:
+                  // frm = new CustFrame();
+                  // break;
+            // case crm_dash_custBtn:
+                  // break;
+            // case crm_dash_svBtn:
+                  // break;
+            // case crm_dash_scrlBtn:
+                  // break;
+            // default :
+                  // break;
+      // }
+      frm = new CustFrame(this);
       this->Hide();
       frm->Show();
 }
