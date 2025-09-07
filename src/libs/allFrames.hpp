@@ -1,11 +1,17 @@
+#include "wx/listctrl.h"
 #include <wx/wx.h>
 
 enum ID{
-  LoginBtn,
-  AddCustBtn,
-  AddEntryBtn,
-  AddSvBtn,
-  ChkScrlBtn
+  crm_login_loginBtn,
+  crm_dash_custBtn,
+  crm_dash_addBtn,
+  crm_dash_svBtn,
+  crm_dash_scrlBtn,
+  // custWnd,
+  // addWnd,
+  // svWnd,
+  // scrlWnd,
+  // mainWnd,
 };
 
 class LoginFrame : public wxFrame{
@@ -26,24 +32,27 @@ class LoginFrame : public wxFrame{
 class DashFrame : public wxFrame{
   public:
     DashFrame(const wxString & user);
+    void onBtnClick(wxCommandEvent & evt);
   private:
     wxMenuBar * mainBar;
     wxMenu * UserMenu;
     wxMenuItem * LogoutOpt;
-    wxBoxSizer * mainSizer,
-               * topSizer,
-               * bottomSizer,
-               * userSizer,
-               * searchSizer,
-               * actionsSizer;
+    wxGridSizer * mainSizer;
+    wxButton * custBtn,
+             * addBtn,
+             * svBtn,
+             * scrlBtn;
+};
+
+class CustFrame : public wxFrame {
+  public:
+    CustFrame();
+    void custCols();
+    void pop();
+  private:
+    wxSizer * mainSizer;
     wxPanel * searchPanel,
-            * userPanel,
-            * searchResults,
-            * actionsPanel;
+          * cListPanel;
     wxTextCtrl * searchBar;
-    wxStaticText * userMobile;
-    wxButton * AddCust,
-             * AddEntry,
-             * AddSv,
-             * ChkScrl;
+    wxListView * cListView;
 };

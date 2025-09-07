@@ -23,7 +23,7 @@ LoginFrame::LoginFrame()
   panelSizer->Add(pwd, 0, wxEXPAND | wxALL, 10);
 
   // create button control
-  Login = new wxButton(panel, LoginBtn, "Login", wxDefaultPosition, wxDefaultSize);
+  Login = new wxButton(panel, crm_login_loginBtn, "Login", wxDefaultPosition, wxDefaultSize);
 
   // place button control in panel
   panelSizer->Add(Login, 0, wxEXPAND | wxALL, 10);
