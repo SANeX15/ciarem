@@ -1,4 +1,7 @@
+#include "wx/dialog.h"
+#include "wx/event.h"
 #include "wx/listctrl.h"
+#include <vector>
 #include <wx/wx.h>
 
 enum ID{
@@ -7,11 +10,15 @@ enum ID{
   crm_dash_addBtn,
   crm_dash_svBtn,
   crm_dash_scrlBtn,
-  custWnd,
+  // custWnd,
   // addWnd,
   // svWnd,
   // scrlWnd,
   // mainWnd,
+};
+
+struct Customer {
+  std::string uid, name, dob;
 };
 
 class LoginFrame : public wxFrame{
@@ -47,12 +54,14 @@ class DashFrame : public wxFrame{
 class CustFrame : public wxFrame {
   public:
     CustFrame(wxWindow * parent);
-    void custCols();
-    void pop();
   private:
     wxSizer * mainSizer;
     wxPanel * searchPanel,
           * cListPanel;
     wxTextCtrl * searchBar;
     wxListView * cListView;
+    void custCols(),
+         pop(),
+         onClose(wxCloseEvent & evt);
+    std::vector<Customer> customers;
 };
