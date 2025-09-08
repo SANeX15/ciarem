@@ -8,10 +8,18 @@ CustFrame::CustFrame(wxWindow * parent)
 
   searchBar = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   cListView = new wxListView(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+  mainToolBar = CreateToolBar();
 
+  mainToolBar->AddTool(crm_cust_addBtn, "New Customer", wxArtProvider::GetBitmap(wxART_NEW,wxART_TOOLBAR), "Creates a Customer Entry");
+  mainToolBar->Realize();
+
+  searchBar->SetHint("Search Customer by Name or UID");
   mainSizer->Add(searchBar, 0, wxALL | wxEXPAND,10);
   mainSizer->Add(cListView, 1, wxALL | wxEXPAND, 10);
   this->SetSizerAndFit(mainSizer);
+
+  // Bind toolbar to it's event
+  mainToolBar->Bind(wxEVT_TOOL, &CustFrame::onTool, this);
 
   // Bind the close event to the onClose handler
   this->Bind(wxEVT_CLOSE_WINDOW, &CustFrame::onClose, this);
@@ -19,6 +27,16 @@ CustFrame::CustFrame(wxWindow * parent)
   custCols();
   pop();
   cListView->SetColumnWidth(1, wxLIST_AUTOSIZE_USEHEADER);
+}
+
+void CustFrame::onTool(wxCommandEvent & evt){
+  int id = evt.GetId();
+  switch(id){
+    case crm_cust_addBtn:
+      break;
+    default:
+      break;
+  }
 }
 
 void CustFrame::custCols(){
