@@ -1,10 +1,10 @@
-#include "wx/event.h"
+#include "allForms.hpp"
 #include <vector>
 #include <wx/wx.h>
 #include <wx/listctrl.h>
 #include <wx/artprov.h>
 
-enum ID{
+enum frame_ID{
   crm_login_loginBtn,
   crm_dash_custBtn,
   crm_dash_addBtn,

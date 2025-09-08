@@ -30,13 +30,15 @@ CustFrame::CustFrame(wxWindow * parent)
 }
 
 void CustFrame::onTool(wxCommandEvent & evt){
-  int id = evt.GetId();
-  switch(id){
-    case crm_cust_addBtn:
-      break;
-    default:
-      break;
-  }
+  // int id = evt.GetId();
+  // switch(id){
+    // case crm_cust_addBtn:
+      // break;
+    // default:
+      // break;
+  // }
+  CustForm * cf = new CustForm(this, true);
+  cf->Show();
 }
 
 void CustFrame::custCols(){
