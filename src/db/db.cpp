@@ -1,9 +1,9 @@
 #include "../libs/db-conf.hpp"
+#include <memory>
 #include "../libs/db.hpp"
 
 namespace db {
-
-std::shared_ptr<sql::Connection> connect() {
+std::shared_ptr<sql::Connection> retconn() {
     try {
       // create a driver
       sql::Driver *driver = sql::mariadb::get_driver_instance();
@@ -23,7 +23,6 @@ std::shared_ptr<sql::Connection> connect() {
       return nullptr;
     }
 }
-
 
 void disconnect(std::shared_ptr<sql::Connection>& conn) {
     if (conn && conn->isClosed() == false) {
@@ -45,5 +44,30 @@ bool userAuth(std::shared_ptr<sql::Connection>& conn, const std::string& uname, 
     catch (sql::SQLException &e) {
         return false;
     }
+  }
 }
+
+void newEntry(std::shared_ptr<sql::Connection>& conn, int tbl_name, std::string values){
+  sql::SQLString tblName, colName;
+  switch (tbl_name) {
+    case db::cust_tbl:
+      tblName = "customer";
+      colName = "uid, name, dob";
+      break;
+    case db::sv_tbl:
+      tblName = "services";
+      break;
+    case db::scrl_tbl:
+      tblName = "scroll";
+      break;
+    default:
+      tblName = NULL;
+      break;
+  }
+  try {
+      std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement("INSERT INTO ? (?) VALUES (?)"));
+  }
+  catch (sql::SQLException e) {
+  
+  }
 }

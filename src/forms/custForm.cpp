@@ -1,5 +1,6 @@
 #include "../libs/allForms.hpp"
-#include "wx/datectrl.h"
+#include "../libs/db.hpp"
+#include <cstddef>
 
 CustForm::CustForm(wxWindow * parent, const bool mode)
          :wxFrame(parent, wxID_ANY, (mode)?"Add a Customer's Details":"Modify a Customer's Details")
@@ -31,18 +32,31 @@ CustForm::CustForm(wxWindow * parent, const bool mode)
   mainSizer->Add(btnPanel, 0 , wxALL | wxEXPAND, 10);
 
   this->SetSizerAndFit(mainSizer);
+
+  saveBtn->Bind(wxEVT_BUTTON, &CustForm::onBtnClick, this);
 }
 
 void CustForm::onBtnClick(wxCommandEvent & evt) {
   int id = evt.GetId();
   switch (id){
     case crm_cust_saveBtn:
+      if(uidField->GetValue() != "" || nameField->GetValue() != "" || dobField->GetValue() != wxDateTime::Today()){
+        wxMessageBox("You left some values unchanged");
+      } else {
+        
+      }
       Destroy();
       break;
     case crm_cust_cancelBtn:
-      Close();
+      Destroy();
       break;
     default:
       break;
   }
+}
+
+void CustForm::saveProc(const std::string vals){
+  std::shared_ptr<sql::Connection> conn = db::retconn();
+  
+  db::newEntry(conn,db::cust_tbl,vals);
 }

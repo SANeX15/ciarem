@@ -44,7 +44,7 @@ LoginFrame::LoginFrame()
 void LoginFrame::OnLogin(wxCommandEvent & evt){
   std::string uname = mob->GetValue().ToStdString();
   std::string passwd = pwd->GetValue().ToStdString();
-  std::shared_ptr<sql::Connection> conn = db::connect();
+  std::shared_ptr<sql::Connection> conn = db::retconn();
   wxString msg;
 
   if (conn == NULL){
