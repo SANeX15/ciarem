@@ -1,4 +1,5 @@
 #include "../libs/db-conf.hpp"
+#include <cstddef>
 #include <memory>
 #include "../libs/db.hpp"
 
@@ -47,25 +48,42 @@ bool userAuth(std::shared_ptr<sql::Connection>& conn, const std::string& uname, 
   }
 }
 
-void newEntry(std::shared_ptr<sql::Connection>& conn, int tbl_name, std::string values){
-  sql::SQLString tblName, colName;
-  switch (tbl_name) {
+void newEntry(std::shared_ptr<sql::Connection>& conn, int tblName, const std::vector<std::string>& values){
+  sql::SQLString query;
+  std::string tbl_name, col_name, placeholders;
+  switch (tblName) {
     case db::cust_tbl:
-      tblName = "customer";
-      colName = "uid, name, dob";
+      tbl_name = "customer";
+      col_name = "uid, name, dob";
       break;
     case db::sv_tbl:
-      tblName = "services";
+      tbl_name = "service";
+      col_name = "uid, name, dob";
       break;
     case db::scrl_tbl:
-      tblName = "scroll";
+      tbl_name = "scroll";
+      col_name = "uid, name, dob";
       break;
     default:
-      tblName = NULL;
-      break;
+      return;
   }
+  
+  for (size_t i = 0; i < values.size(); ++i) {
+      placeholders += "?,";
+  }
+  if (!placeholders.empty()) {
+      placeholders.resize(placeholders.size() - 1); // Remove trailing comma
+  }
+
+  query = "INSERT INTO " + tbl_name + " (" + col_name + ") VALUES (" + placeholders + ")";
+  
   try {
-      std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement("INSERT INTO ? (?) VALUES (?)"));
+      std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
+      for (size_t i = 0; i < values.size(); ++i) {
+          pstmt->setString(i + 1, values[i]);
+      }
+      pstmt->execute();
+      
   }
   catch (sql::SQLException e) {
   

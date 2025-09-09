@@ -14,7 +14,7 @@ namespace db{
   // Returns a shared pointer to the database connection
   std::shared_ptr<sql::Connection> retconn();
 
-  void newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, std::string values);
+  void newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, const std::vector<std::string>& values);
   
   // A helper function to close a connection
   void disconnect(std::shared_ptr<sql::Connection>& conn);

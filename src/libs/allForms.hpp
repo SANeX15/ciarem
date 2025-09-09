@@ -10,7 +10,7 @@ class CustForm : public wxFrame {
   public:
     CustForm(wxWindow * parent, const bool mode);
     void onBtnClick(wxCommandEvent & evt);
-    void saveProc(const std::string vals);
+    void saveProc();
   private:
     wxBoxSizer * mainSizer,
                * btnSizer;

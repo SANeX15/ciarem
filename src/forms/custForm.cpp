@@ -1,6 +1,5 @@
 #include "../libs/allForms.hpp"
 #include "../libs/db.hpp"
-#include <cstddef>
 
 CustForm::CustForm(wxWindow * parent, const bool mode)
          :wxFrame(parent, wxID_ANY, (mode)?"Add a Customer's Details":"Modify a Customer's Details")
@@ -34,16 +33,17 @@ CustForm::CustForm(wxWindow * parent, const bool mode)
   this->SetSizerAndFit(mainSizer);
 
   saveBtn->Bind(wxEVT_BUTTON, &CustForm::onBtnClick, this);
+  cancelBtn->Bind(wxEVT_BUTTON, &CustForm::onBtnClick, this);
 }
 
 void CustForm::onBtnClick(wxCommandEvent & evt) {
   int id = evt.GetId();
   switch (id){
     case crm_cust_saveBtn:
-      if(uidField->GetValue() != "" || nameField->GetValue() != "" || dobField->GetValue() != wxDateTime::Today()){
+      if(uidField->GetValue().IsEmpty() || nameField->GetValue().IsEmpty() || dobField->GetValue() == wxDateTime::Today()){
         wxMessageBox("You left some values unchanged");
       } else {
-        
+        saveProc();
       }
       Destroy();
       break;
@@ -55,8 +55,13 @@ void CustForm::onBtnClick(wxCommandEvent & evt) {
   }
 }
 
-void CustForm::saveProc(const std::string vals){
+void CustForm::saveProc(){
   std::shared_ptr<sql::Connection> conn = db::retconn();
+  std::vector<std::string> values;
   
-  db::newEntry(conn,db::cust_tbl,vals);
+  values.push_back(uidField->GetValue().ToStdString());
+  values.push_back(nameField->GetValue().ToStdString());
+  values.push_back(dobField->GetValue().FormatISODate().ToStdString());
+  
+  db::newEntry(conn, db::cust_tbl, values);
 }
