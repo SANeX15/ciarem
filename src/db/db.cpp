@@ -1,8 +1,8 @@
 #include "../libs/db-conf.hpp"
 #include "../libs/db.hpp"
-using namespace db;
+#include <iostream>
 
-
+namespace db{
 std::shared_ptr<sql::Connection> crmDB::retconn() {
     try {
       // create a driver
@@ -45,7 +45,54 @@ bool crmDB::userAuth(std::shared_ptr<sql::Connection>& conn, const std::string& 
         return false;
     }
 }
-bool newEntry(std::shared_ptr<sql::Connection>& conn, int tblName, const std::vector<std::string>& values){
+
+template<typename T>
+std::vector<T> crmDB::getEntries(std::shared_ptr<sql::Connection>& conn, tbl tblName){
+  std::vector<T> entries;
+  if(!conn){
+    return entries;
+  }
+
+  std::string str_tbl_name, str_cols;
+
+  switch (tblName) {
+    case db::cust_tbl:
+            str_tbl_name = "customer";
+            str_cols = "uid, name, dob";
+            break;
+        case db::sv_tbl:
+            str_tbl_name = "service";
+            str_cols = "uid, name, dob";
+            break;
+        case db::scrl_tbl:
+            str_tbl_name = "scroll";
+            str_cols = "uid, name, dob";
+            break;
+    default:
+      return entries;
+      break;
+  }
+  try {
+    std::unique_ptr<sql::Statement> stmt(conn->createStatement());
+    std::unique_ptr<sql::ResultSet> rs(stmt->executeQuery("SELECT " + str_cols + " FROM " + str_tbl_name));
+
+    while(rs->next()){
+      T entry;
+      if (tblName == db::cust_tbl) {
+              entry.uid = rs->getString("uid");
+              entry.name = rs->getString("name");
+              entry.dob = rs->getString("dob");
+      }
+      entries.push_back(entry);
+    }
+    
+  } catch (sql::SQLException e) {
+    std::cerr << "SQL Exception: " << e.what() << std::endl;
+  }
+  return entries;
+}
+
+std::string crmDB::newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, const std::vector<std::string>& values){
   sql::SQLString query;
   std::string tbl_name, col_name, placeholders;
   switch (tblName) {
@@ -62,7 +109,7 @@ bool newEntry(std::shared_ptr<sql::Connection>& conn, int tblName, const std::ve
       col_name = "uid, name, dob";
       break;
     default:
-      return false;
+      return "invalid table";
   }
   
   for (size_t i = 0; i < values.size(); ++i) {
@@ -80,9 +127,10 @@ bool newEntry(std::shared_ptr<sql::Connection>& conn, int tblName, const std::ve
           pstmt->setString(i + 1, values[i]);
       }
       pstmt->execute();
-      return true;
+      return "";
   }
   catch (sql::SQLException e) {
-    return false;
+    return e.what();
   }
+}
 }

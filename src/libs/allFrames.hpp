@@ -1,5 +1,5 @@
 #include "allForms.hpp"
-#include <vector>
+#include "structs.hpp"
 #include <wx/wx.h>
 #include <wx/listctrl.h>
 #include <wx/artprov.h>
@@ -16,10 +16,6 @@ enum frame_ID{
   // svWnd,
   // scrlWnd,
   // mainWnd,
-};
-
-struct Customer {
-  std::string uid, name, dob;
 };
 
 class LoginFrame : public wxFrame{
@@ -63,8 +59,9 @@ class CustFrame : public wxFrame {
     wxListView * cListView;
     wxToolBar * mainToolBar;
     void custCols(),
-         pop(),
+         populate(),
          onClose(wxCloseEvent & evt),
          onTool(wxCommandEvent & evt);
     std::vector<Customer> customers;
+    CustForm * cf;
 };

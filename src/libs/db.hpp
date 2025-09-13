@@ -2,6 +2,7 @@
 #define DB_H
 
 #include <mariadb/conncpp.hpp>
+#include <vector>
 
 namespace db{
   
@@ -16,7 +17,9 @@ namespace db{
       // Returns a shared pointer to the database connection
       std::shared_ptr<sql::Connection> retconn();
 
-      bool newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, const std::vector<std::string>& values);
+      template<typename T>
+      std::vector<T> getEntries(std::shared_ptr<sql::Connection>& conn, tbl tblName);
+      std::string newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, const std::vector<std::string>& values);
   
       // A helper function to close a connection
       void disconnect(std::shared_ptr<sql::Connection>& conn);

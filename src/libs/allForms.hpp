@@ -2,6 +2,8 @@
 #include <wx/datectrl.h>
 
 enum form_ID {
+  crm_cust_nameField,
+  crm_cust_uidField,
   crm_cust_saveBtn,
   crm_cust_cancelBtn,
 };
@@ -10,6 +12,7 @@ class CustForm : public wxFrame {
   public:
     CustForm(wxWindow * parent, const bool mode);
     void onBtnClick(wxCommandEvent & evt);
+    void checkField(wxCommandEvent & evt);
     void saveProc();
   private:
     wxBoxSizer * mainSizer,

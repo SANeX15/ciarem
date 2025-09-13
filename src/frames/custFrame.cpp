@@ -1,4 +1,5 @@
 #include "../libs/allFrames.hpp"
+#include "../libs/db.hpp"
 
 CustFrame::CustFrame(wxWindow * parent)
           :wxFrame(parent, wxID_ANY, "Manage Customers")
@@ -25,20 +26,21 @@ CustFrame::CustFrame(wxWindow * parent)
   this->Bind(wxEVT_CLOSE_WINDOW, &CustFrame::onClose, this);
 
   custCols();
-  pop();
+  populate();
   cListView->SetColumnWidth(1, wxLIST_AUTOSIZE_USEHEADER);
 }
 
 void CustFrame::onTool(wxCommandEvent & evt){
-  // int id = evt.GetId();
-  // switch(id){
-    // case crm_cust_addBtn:
-      // break;
-    // default:
-      // break;
-  // }
-  CustForm * cf = new CustForm(this, true);
-  cf->Show();
+  int id = evt.GetId();
+  switch(id){
+    case crm_cust_addBtn:
+      cf = new CustForm(this, true);
+      cf->Show();
+      break;
+    default:
+      evt.Skip();
+      break;
+  }
 }
 
 void CustFrame::custCols(){
@@ -47,22 +49,30 @@ void CustFrame::custCols(){
   cListView->AppendColumn("dob", wxLIST_FORMAT_LEFT, 90);
 }
 
-void CustFrame::pop(){
+void CustFrame::populate(){
   customers.clear();
   cListView->DeleteAllItems();
-  
-  long index; wxString name;
-  for(int i=0; i<10; i++){
-    Customer c;
-    c.uid = std::to_string(12345678901 + i);
-    c.name = "person " + std::to_string(i);
-    c.dob = "2000-01-" + std::to_string(i);
-    customers.push_back(c);
-  }
-  for(size_t i = 0; i < customers.size(); ++i){
-    index = cListView->InsertItem(i , customers[i].uid);
-    cListView->SetItem(index, 1, customers[i].name);
-    cListView->SetItem(index, 2, customers[i].dob);
+
+  db::crmDB dbObj;
+  std::shared_ptr<sql::Connection> conn = dbObj.retconn();
+  if(conn){
+    customers = dbObj.getEntries<Customer>(conn, db::cust_tbl);
+    dbObj.disconnect(conn);
+
+    if (customers.empty()) {
+      wxMessageBox("No entries found in the customer table.", "Info");
+      return;
+    }
+
+    long index;
+    for(size_t i = 0; i < customers.size(); ++i){
+      index = cListView->InsertItem(i, customers[i].uid);
+      cListView->SetItem(index, 1, customers[i].name);
+      cListView->SetItem(index, 2, customers[i].dob);
+    }
+  } else {
+    wxMessageBox("Failed to retrieve data from database : Table Empty");
+    return;
   }
 }
 

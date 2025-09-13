@@ -10,7 +10,7 @@ bool CRM_App::OnInit(){
   // LoginFrame * lf = new LoginFrame();
 
   // DashFrame * df = new DashFrame("user");
-  CustForm * cf = new CustForm(nullptr, true);
+  CustFrame * cf = new CustFrame(nullptr);
   // Show the main window. This is the critical step to avoid the segmentation fault.
   // lf->Show(true);
 

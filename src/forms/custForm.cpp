@@ -13,8 +13,8 @@ CustForm::CustForm(wxWindow * parent, const bool mode)
   Title = new wxStaticText(this, wxID_ANY,(mode)?"New Customer's Details":"Existing Customer's Details");
   
   wxTextValidator uidVal(wxFILTER_NUMERIC);
-  nameField = new wxTextCtrl(this, wxID_ANY, "");
-  uidField = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 0, uidVal);
+  nameField = new wxTextCtrl(this, crm_cust_nameField, "");
+  uidField = new wxTextCtrl(this, crm_cust_uidField, "", wxDefaultPosition, wxDefaultSize, 0, uidVal);
   dobField = new wxDatePickerCtrl(this, wxID_ANY);
 
   btnSizer->Add(saveBtn,0,wxALL | wxEXPAND, 10);
@@ -22,6 +22,7 @@ CustForm::CustForm(wxWindow * parent, const bool mode)
   btnPanel->SetSizer(btnSizer);
 
   uidField->SetHint("UID no.");
+  uidField->SetMaxLength(12);
   nameField->SetHint("Name");
   
   mainSizer->Add(Title, 0, wxALL | wxEXPAND, 10);
@@ -32,6 +33,7 @@ CustForm::CustForm(wxWindow * parent, const bool mode)
 
   this->SetSizerAndFit(mainSizer);
 
+  uidField->Bind(wxEVT_TEXT, &CustForm::checkField, this);
   saveBtn->Bind(wxEVT_BUTTON, &CustForm::onBtnClick, this);
   cancelBtn->Bind(wxEVT_BUTTON, &CustForm::onBtnClick, this);
 }
@@ -42,10 +44,10 @@ void CustForm::onBtnClick(wxCommandEvent & evt) {
     case crm_cust_saveBtn:
       if(uidField->GetValue().IsEmpty() || nameField->GetValue().IsEmpty() || dobField->GetValue() == wxDateTime::Today()){
         wxMessageBox("You left some values unchanged");
+        return;
       } else {
         saveProc();
       }
-      Destroy();
       break;
     case crm_cust_cancelBtn:
       Destroy();
@@ -63,12 +65,35 @@ void CustForm::saveProc(){
   values.push_back(uidField->GetValue().ToStdString());
   values.push_back(nameField->GetValue().ToStdString());
   values.push_back(dobField->GetValue().FormatISODate().ToStdString());
+
+  std::string err = dbObj.newEntry(conn, db::cust_tbl, values);
   
-  if(dbObj.newEntry(conn, db::cust_tbl, values)){
-    return;
+  if(!err.empty()){
+    wxMessageBox("An error occured while saving details: " + err, "Save Error");
   }
   else{
-    wxMessageBox("An error occured while saving details");
+    Destroy();
   }
   dbObj.disconnect(conn);
+}
+
+void CustForm::checkField(wxCommandEvent & evt){
+  int id = evt.GetId();
+  wxString tmp = "";
+  switch (id) {
+    case crm_cust_uidField:
+      tmp = uidField->GetValue();
+      if (tmp.Length() == 12) {
+        uidField->SetForegroundColour(*wxWHITE);
+        uidField->Refresh();
+        saveBtn->Enable();
+      } else {
+        uidField->SetForegroundColour(wxColour(255, 200, 200));
+        uidField->Refresh();
+        saveBtn->Disable();
+      }
+      break;
+    default:
+      evt.Skip();
+  }
 }
