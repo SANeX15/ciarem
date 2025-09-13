@@ -56,12 +56,19 @@ void CustForm::onBtnClick(wxCommandEvent & evt) {
 }
 
 void CustForm::saveProc(){
-  std::shared_ptr<sql::Connection> conn = db::retconn();
+  db::crmDB dbObj;
+  std::shared_ptr<sql::Connection> conn = dbObj.retconn();
   std::vector<std::string> values;
   
   values.push_back(uidField->GetValue().ToStdString());
   values.push_back(nameField->GetValue().ToStdString());
   values.push_back(dobField->GetValue().FormatISODate().ToStdString());
   
-  db::newEntry(conn, db::cust_tbl, values);
+  if(dbObj.newEntry(conn, db::cust_tbl, values)){
+    return;
+  }
+  else{
+    wxMessageBox("An error occured while saving details");
+  }
+  dbObj.disconnect(conn);
 }

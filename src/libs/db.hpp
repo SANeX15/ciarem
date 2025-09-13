@@ -10,17 +10,20 @@ namespace db{
   sv_tbl,
   scrl_tbl
   };
-  
-  // Returns a shared pointer to the database connection
-  std::shared_ptr<sql::Connection> retconn();
 
-  void newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, const std::vector<std::string>& values);
+  class crmDB{
+    public :
+      // Returns a shared pointer to the database connection
+      std::shared_ptr<sql::Connection> retconn();
+
+      bool newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, const std::vector<std::string>& values);
   
-  // A helper function to close a connection
-  void disconnect(std::shared_ptr<sql::Connection>& conn);
+      // A helper function to close a connection
+      void disconnect(std::shared_ptr<sql::Connection>& conn);
   
-  // Authenticates a user with a username and password
-  bool userAuth(std::shared_ptr<sql::Connection>& conn, const std::string& uname, const std::string& passwd);
+      // Authenticates a user with a username and password
+      bool userAuth(std::shared_ptr<sql::Connection>& conn, const std::string& uname, const std::string& passwd);
+  };
 }
 
 #endif

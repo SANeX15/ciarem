@@ -1,10 +1,9 @@
 #include "../libs/db-conf.hpp"
-#include <cstddef>
-#include <memory>
 #include "../libs/db.hpp"
+using namespace db;
 
-namespace db {
-std::shared_ptr<sql::Connection> retconn() {
+
+std::shared_ptr<sql::Connection> crmDB::retconn() {
     try {
       // create a driver
       sql::Driver *driver = sql::mariadb::get_driver_instance();
@@ -25,13 +24,13 @@ std::shared_ptr<sql::Connection> retconn() {
     }
 }
 
-void disconnect(std::shared_ptr<sql::Connection>& conn) {
+void crmDB::disconnect(std::shared_ptr<sql::Connection>& conn) {
     if (conn && conn->isClosed() == false) {
         conn->close();
     }
 }
 
-bool userAuth(std::shared_ptr<sql::Connection>& conn, const std::string& uname, const std::string& passwd){
+bool crmDB::userAuth(std::shared_ptr<sql::Connection>& conn, const std::string& uname, const std::string& passwd){
   try {
       // create a statement
       std::unique_ptr<sql::Statement> stmt(conn->createStatement());
@@ -45,10 +44,8 @@ bool userAuth(std::shared_ptr<sql::Connection>& conn, const std::string& uname, 
     catch (sql::SQLException &e) {
         return false;
     }
-  }
 }
-
-void newEntry(std::shared_ptr<sql::Connection>& conn, int tblName, const std::vector<std::string>& values){
+bool newEntry(std::shared_ptr<sql::Connection>& conn, int tblName, const std::vector<std::string>& values){
   sql::SQLString query;
   std::string tbl_name, col_name, placeholders;
   switch (tblName) {
@@ -65,7 +62,7 @@ void newEntry(std::shared_ptr<sql::Connection>& conn, int tblName, const std::ve
       col_name = "uid, name, dob";
       break;
     default:
-      return;
+      return false;
   }
   
   for (size_t i = 0; i < values.size(); ++i) {
@@ -83,9 +80,9 @@ void newEntry(std::shared_ptr<sql::Connection>& conn, int tblName, const std::ve
           pstmt->setString(i + 1, values[i]);
       }
       pstmt->execute();
-      
+      return true;
   }
   catch (sql::SQLException e) {
-  
+    return false;
   }
 }
