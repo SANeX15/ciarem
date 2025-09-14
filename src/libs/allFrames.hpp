@@ -11,6 +11,8 @@ enum frame_ID{
   crm_dash_svBtn,
   crm_dash_scrlBtn,
   crm_cust_addBtn,
+  crm_cust_relBtn,
+  crm_cust_delBtn,
   // custWnd,
   // addWnd,
   // svWnd,
@@ -51,6 +53,7 @@ class DashFrame : public wxFrame{
 class CustFrame : public wxFrame {
   public:
     CustFrame(wxWindow * parent);
+    void populate();
   private:
     wxSizer * mainSizer;
     wxPanel * searchPanel,
@@ -59,9 +62,11 @@ class CustFrame : public wxFrame {
     wxListView * cListView;
     wxToolBar * mainToolBar;
     void custCols(),
-         populate(),
+         delCust(),
          onClose(wxCloseEvent & evt),
-         onTool(wxCommandEvent & evt);
+         onTool(wxCommandEvent & evt),
+         onListItemSel(wxListEvent & evt);
     std::vector<Customer> customers;
+    long selID;
     CustForm * cf;
 };

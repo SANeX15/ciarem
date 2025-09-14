@@ -1,5 +1,6 @@
 #include <wx/wx.h>
 #include <wx/datectrl.h>
+#include <wx/dialog.h>
 
 enum form_ID {
   crm_cust_nameField,
@@ -8,7 +9,7 @@ enum form_ID {
   crm_cust_cancelBtn,
 };
 
-class CustForm : public wxFrame {
+class CustForm : public wxDialog {
   public:
     CustForm(wxWindow * parent, const bool mode);
     void onBtnClick(wxCommandEvent & evt);

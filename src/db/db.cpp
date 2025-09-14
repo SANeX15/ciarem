@@ -1,6 +1,5 @@
 #include "../libs/db-conf.hpp"
 #include "../libs/db.hpp"
-#include <iostream>
 
 namespace db{
 std::shared_ptr<sql::Connection> crmDB::retconn() {
@@ -24,6 +23,29 @@ std::shared_ptr<sql::Connection> crmDB::retconn() {
     }
 }
 
+void crmDB::getTbl(tbl tblName, std::string *table_name, std::string *cols, std::string *idCol){
+  switch(tblName){
+    case cust_tbl:
+      *table_name = "customer";
+      *cols = "uid, name, dob";
+      *idCol = "uid";
+      break;
+    case sv_tbl:
+      *table_name = "service";
+      *cols = "id, name, price";
+      *idCol = "id";
+      break;
+    case scrl_tbl:
+      *table_name = "scroll";
+      *cols = "id, name, doe";
+      *idCol = "id";
+    default:
+      return;
+      break;
+  }
+}
+
+
 void crmDB::disconnect(std::shared_ptr<sql::Connection>& conn) {
     if (conn && conn->isClosed() == false) {
         conn->close();
@@ -33,10 +55,12 @@ void crmDB::disconnect(std::shared_ptr<sql::Connection>& conn) {
 bool crmDB::userAuth(std::shared_ptr<sql::Connection>& conn, const std::string& uname, const std::string& passwd){
   try {
       // create a statement
-      std::unique_ptr<sql::Statement> stmt(conn->createStatement());
-
+      std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement("SELECT mobile, passwd FROM user WHERE mobile='?' AND passwd='?'"));
+      pstmt->setString(1, uname);
+      pstmt->setString(2, passwd);
+      
       // Execute a query using the statement
-      std::unique_ptr<sql::ResultSet> res(stmt->executeQuery("SELECT mobile, passwd FROM user WHERE mobile='" + uname + "' AND passwd='" + passwd + "'"));
+      std::unique_ptr<sql::ResultSet> res(pstmt->executeQuery());
       
       // Check if a matching record was found
       return res->next();
@@ -46,71 +70,10 @@ bool crmDB::userAuth(std::shared_ptr<sql::Connection>& conn, const std::string& 
     }
 }
 
-template<typename T>
-std::vector<T> crmDB::getEntries(std::shared_ptr<sql::Connection>& conn, tbl tblName){
-  std::vector<T> entries;
-  if(!conn){
-    return entries;
-  }
-
-  std::string str_tbl_name, str_cols;
-
-  switch (tblName) {
-    case db::cust_tbl:
-            str_tbl_name = "customer";
-            str_cols = "uid, name, dob";
-            break;
-        case db::sv_tbl:
-            str_tbl_name = "service";
-            str_cols = "uid, name, dob";
-            break;
-        case db::scrl_tbl:
-            str_tbl_name = "scroll";
-            str_cols = "uid, name, dob";
-            break;
-    default:
-      return entries;
-      break;
-  }
-  try {
-    std::unique_ptr<sql::Statement> stmt(conn->createStatement());
-    std::unique_ptr<sql::ResultSet> rs(stmt->executeQuery("SELECT " + str_cols + " FROM " + str_tbl_name));
-
-    while(rs->next()){
-      T entry;
-      if (tblName == db::cust_tbl) {
-              entry.uid = rs->getString("uid");
-              entry.name = rs->getString("name");
-              entry.dob = rs->getString("dob");
-      }
-      entries.push_back(entry);
-    }
-    
-  } catch (sql::SQLException e) {
-    std::cerr << "SQL Exception: " << e.what() << std::endl;
-  }
-  return entries;
-}
-
 std::string crmDB::newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, const std::vector<std::string>& values){
   sql::SQLString query;
   std::string tbl_name, col_name, placeholders;
-  switch (tblName) {
-    case db::cust_tbl:
-      tbl_name = "customer";
-      col_name = "uid, name, dob";
-      break;
-    case db::sv_tbl:
-      tbl_name = "service";
-      col_name = "uid, name, dob";
-      break;
-    case db::scrl_tbl:
-      tbl_name = "scroll";
-      col_name = "uid, name, dob";
-      break;
-    default:
-      return "invalid table";
-  }
+  getTbl(tblName, &tbl_name, &col_name);
   
   for (size_t i = 0; i < values.size(); ++i) {
       placeholders += "?,";
@@ -133,4 +96,20 @@ std::string crmDB::newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName,
     return e.what();
   }
 }
+
+std::string crmDB::remEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, const long id){
+  std::string tbl_name, idCol, query;
+  getTbl(tblName, &tbl_name, nullptr, &idCol);
+
+  query = "DELETE FROM " + tbl_name + " WHERE " + idCol + " = " + std::to_string(id);
+  try {
+    std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
+    pstmt->execute();
+    return "";
+  } catch (sql::SQLException e) {
+    return e.what();
+  }
+  return "";
+}
+
 }

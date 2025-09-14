@@ -1,8 +1,8 @@
-#include "../libs/allForms.hpp"
+#include "../libs/allFrames.hpp"
 #include "../libs/db.hpp"
 
 CustForm::CustForm(wxWindow * parent, const bool mode)
-         :wxFrame(parent, wxID_ANY, (mode)?"Add a Customer's Details":"Modify a Customer's Details")
+         :wxDialog(parent, wxID_ANY, (mode)?"Add a Customer's Details":"Modify a Customer's Details")
 {
   mainSizer = new wxBoxSizer(wxVERTICAL);
   btnSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -72,6 +72,10 @@ void CustForm::saveProc(){
     wxMessageBox("An error occured while saving details: " + err, "Save Error");
   }
   else{
+    CustFrame *parentFrame = dynamic_cast<CustFrame*>(GetParent());
+    if (parentFrame) {
+      parentFrame->populate();
+    }
     Destroy();
   }
   dbObj.disconnect(conn);
