@@ -101,9 +101,12 @@ std::string crmDB::remEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName,
   std::string tbl_name, idCol, query;
   getTbl(tblName, &tbl_name, nullptr, &idCol);
 
-  query = "DELETE FROM " + tbl_name + " WHERE " + idCol + " = " + std::to_string(id);
+  query = "DELETE FROM ? WHERE ? = ?";
   try {
     std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
+    pstmt->setString(1, tbl_name);
+    pstmt->setString(2, idCol);
+    pstmt->setLong(3, id);
     pstmt->execute();
     return "";
   } catch (sql::SQLException e) {

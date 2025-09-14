@@ -1,6 +1,8 @@
 #include "../libs/allFrames.hpp"
 #include "../libs/db.hpp"
 #include "wx/listbase.h"
+#include "wx/msgdlg.h"
+#include "wx/wx.h"
 
 CustFrame::CustFrame(wxWindow * parent)
           :wxFrame(parent, wxID_ANY, "Manage Customers")
@@ -62,19 +64,36 @@ void CustFrame::custCols(){
 void CustFrame::onListItemSel(wxListEvent & evt){
   long itemIndex = evt.GetItem().GetId();
 
-  if(itemIndex > 0 && itemIndex < static_cast<long>(customers.size())){
+  if(itemIndex >= 0 && itemIndex < static_cast<long>(customers.size())){
     Customer selCust = customers[itemIndex];
     selID = std::stol(selCust.uid);
   }
 }
 
 void CustFrame::delCust(){
+  if(selID == -1){
+    wxMessageBox("Select an entry to delete.", "Operational Error");
+  }
+
+  wxMessageDialog confirm(this,"Are you sure about deleting this entry ? (no rollbacks !)", "Operational Warning", wxYES_NO | wxICON_QUESTION);
+  if (confirm.ShowModal() == wxID_NO) {
+    return;
+  }
+  
   db::crmDB dbObj;
   std::shared_ptr<sql::Connection> conn = dbObj.retconn();
   if(conn){
-    if (selID != 0) {
-      dbObj.remEntry(conn, db::cust_tbl,selID);
+    std::string err = dbObj.remEntry(conn, db::cust_tbl, selID);
+    if (!err.empty()) {
+      wxMessageBox("An error occurred while deleting the entry: " + wxString(err), "Error");
+    } else {
+      wxMessageBox("Customer deleted successfully!");
+      populate(); // Refresh the list
     }
+    dbObj.disconnect(conn);
+    selID = -1; // Reset selID after deletion
+  } else {
+    wxMessageBox("Database Connection Failed !", "Operational Error");
   }
 }
 
