@@ -1,5 +1,6 @@
 #include "../libs/allFrames.hpp"
 #include "../libs/db.hpp"
+#include "wx/msgdlg.h"
 
 CustForm::CustForm(wxWindow * parent, const bool mode)
          :wxDialog(parent, wxID_ANY, (mode)?"Add a Customer's Details":"Modify a Customer's Details")
@@ -13,8 +14,8 @@ CustForm::CustForm(wxWindow * parent, const bool mode)
   Title = new wxStaticText(this, wxID_ANY,(mode)?"New Customer's Details":"Existing Customer's Details");
   
   wxTextValidator uidVal(wxFILTER_NUMERIC);
-  nameField = new wxTextCtrl(this, crm_cust_nameField, "");
   uidField = new wxTextCtrl(this, crm_cust_uidField, "", wxDefaultPosition, wxDefaultSize, 0, uidVal);
+  nameField = new wxTextCtrl(this, crm_cust_nameField, "");
   dobField = new wxDatePickerCtrl(this, wxID_ANY);
 
   btnSizer->Add(saveBtn,0,wxALL | wxEXPAND, 10);
@@ -58,11 +59,18 @@ void CustForm::onBtnClick(wxCommandEvent & evt) {
 }
 
 void CustForm::saveProc(){
+  wxString uidStr = uidField->GetValue();
+  long long uidValue;
+  if (!uidStr.ToLongLong(&uidValue)) {
+      wxMessageBox("The UID is invalid. Please enter a valid 12-digit number.", "Input Error");
+      return; // Stop the process if UID is not a valid number
+  }
+
   db::crmDB dbObj;
   std::shared_ptr<sql::Connection> conn = dbObj.retconn();
   std::vector<std::string> values;
-  
-  values.push_back(uidField->GetValue().ToStdString());
+
+  values.push_back(uidStr.ToStdString());
   values.push_back(nameField->GetValue().ToStdString());
   values.push_back(dobField->GetValue().FormatISODate().ToStdString());
 

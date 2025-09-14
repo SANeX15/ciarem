@@ -1,5 +1,8 @@
 #include "allForms.hpp"
 #include "structs.hpp"
+#include "wx/event.h"
+#include <cstdint>
+#include <vector>
 #include <wx/wx.h>
 #include <wx/listctrl.h>
 #include <wx/artprov.h>
@@ -53,7 +56,8 @@ class DashFrame : public wxFrame{
 class CustFrame : public wxFrame {
   public:
     CustFrame(wxWindow * parent);
-    void populate();
+    void populate(),
+         updLV(const std::vector<Customer> & toShow);
   private:
     wxSizer * mainSizer;
     wxPanel * searchPanel,
@@ -65,8 +69,9 @@ class CustFrame : public wxFrame {
          delCust(),
          onClose(wxCloseEvent & evt),
          onTool(wxCommandEvent & evt),
-         onListItemSel(wxListEvent & evt);
+         onListItemSel(wxListEvent & evt),
+         onSearch(wxCommandEvent & evt);
     std::vector<Customer> customers;
-    long selID;
+    int64_t selID;
     CustForm * cf;
 };

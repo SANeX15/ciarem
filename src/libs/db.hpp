@@ -3,8 +3,6 @@
 
 #include <mariadb/conncpp.hpp>
 #include <iostream>
-#include <mariadb/conncpp/Connection.hpp>
-#include <memory>
 
 namespace db{
   
@@ -55,7 +53,7 @@ namespace db{
           while(rs->next()){
             T entry;
             if (tblName == db::cust_tbl) {
-              entry.uid = rs->getString("uid");
+              entry.uid = rs->getInt64("uid");
               entry.name = rs->getString("name");
               entry.dob = rs->getString("dob");
             }
@@ -69,7 +67,7 @@ namespace db{
       }
       
       std::string newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, const std::vector<std::string>& values);
-      std::string remEntry(std::shared_ptr<sql::Connection>& coon, tbl tblName, const long id);
+      std::string remEntry(std::shared_ptr<sql::Connection>& coon, tbl tblName, const int64_t id);
       
       // A helper function to close a connection
       void disconnect(std::shared_ptr<sql::Connection>& conn);

@@ -1,8 +1,9 @@
 #include "../libs/allFrames.hpp"
 #include "../libs/db.hpp"
-#include "wx/listbase.h"
-#include "wx/msgdlg.h"
-#include "wx/wx.h"
+#include "wx/event.h"
+#include "wx/string.h"
+#include <cstddef>
+#include <vector>
 
 CustFrame::CustFrame(wxWindow * parent)
           :wxFrame(parent, wxID_ANY, "Manage Customers")
@@ -24,6 +25,8 @@ CustFrame::CustFrame(wxWindow * parent)
   mainSizer->Add(cListView, 1, wxALL | wxEXPAND, 10);
   this->SetSizerAndFit(mainSizer);
 
+  searchBar->Bind(wxEVT_TEXT, &CustFrame::onSearch, this);
+  
   cListView->Bind(wxEVT_LIST_ITEM_SELECTED, &CustFrame::onListItemSel,this);
 
   // Bind toolbar to it's event
@@ -32,6 +35,7 @@ CustFrame::CustFrame(wxWindow * parent)
   // Bind the close event to the onClose handler
   this->Bind(wxEVT_CLOSE_WINDOW, &CustFrame::onClose, this);
 
+  selID = -1;
   custCols();
   populate();
   cListView->SetColumnWidth(1, wxLIST_AUTOSIZE_USEHEADER);
@@ -49,6 +53,7 @@ void CustFrame::onTool(wxCommandEvent & evt){
       break;
     case crm_cust_delBtn:
       delCust();
+      break;
     default:
       evt.Skip();
       break;
@@ -61,12 +66,33 @@ void CustFrame::custCols(){
   cListView->AppendColumn("dob", wxLIST_FORMAT_LEFT, 90);
 }
 
+void CustFrame::onSearch(wxCommandEvent & evt){
+  wxString sQuery = searchBar->GetValue().Lower();
+
+  if (sQuery.IsEmpty()) {
+    updLV(customers);
+    return;
+  }
+
+  std::vector<Customer> sResults;
+  for(const auto & customer : customers){
+    wxString name = wxString(customer.name).Lower();
+    wxString uid = wxString::Format("%lld",customer.uid);
+
+    if (name.StartsWith(sQuery) || uid.StartsWith(sQuery)){
+      sResults.push_back(customer);
+    }
+  }
+  updLV(sResults);
+}
+
+
 void CustFrame::onListItemSel(wxListEvent & evt){
-  long itemIndex = evt.GetItem().GetId();
+  long itemIndex = evt.GetItem().GetData();
 
   if(itemIndex >= 0 && itemIndex < static_cast<long>(customers.size())){
     Customer selCust = customers[itemIndex];
-    selID = std::stol(selCust.uid);
+    selID = selCust.uid;
   }
 }
 
@@ -87,37 +113,44 @@ void CustFrame::delCust(){
     if (!err.empty()) {
       wxMessageBox("An error occurred while deleting the entry: " + wxString(err), "Error");
     } else {
-      wxMessageBox("Customer deleted successfully!");
-      populate(); // Refresh the list
+      populate();
     }
     dbObj.disconnect(conn);
-    selID = -1; // Reset selID after deletion
+    selID = -1;
   } else {
     wxMessageBox("Database Connection Failed !", "Operational Error");
   }
 }
 
+void CustFrame::updLV(const std::vector<Customer> & toShow){
+  cListView->DeleteAllItems();
+
+  long listIndex;
+  for (size_t originalIndex = 0; originalIndex < toShow.size(); ++originalIndex) {
+    for (const auto & cToShow: toShow){
+      if (customers[originalIndex].uid == cToShow.uid) {
+        wxString uidLV = wxString::Format("%lld", customers[originalIndex].uid);
+        cListView->InsertItem(listIndex, uidLV);
+        cListView->SetItem(listIndex, 1, customers[originalIndex].name);
+        cListView->SetItem(listIndex, 2, customers[originalIndex].dob);
+        cListView->SetItemData(listIndex, originalIndex);
+        listIndex++;
+        break;
+      }
+    }
+  }
+}
+
 void CustFrame::populate(){
   customers.clear();
-  cListView->DeleteAllItems();
 
   db::crmDB dbObj;
   std::shared_ptr<sql::Connection> conn = dbObj.retconn();
+  
   if(conn){
     customers = dbObj.getEntries<Customer>(conn, db::cust_tbl);
     dbObj.disconnect(conn);
-
-    if (customers.empty()) {
-      wxMessageBox("No entries found in the customer table.", "Info");
-      return;
-    }
-
-    long index;
-    for(size_t i = 0; i < customers.size(); ++i){
-      index = cListView->InsertItem(i, customers[i].uid);
-      cListView->SetItem(index, 1, customers[i].name);
-      cListView->SetItem(index, 2, customers[i].dob);
-    }
+    updLV(customers);
   } else {
     wxMessageBox("Failed to retrieve data from database : Table Empty");
     return;
@@ -125,9 +158,9 @@ void CustFrame::populate(){
 }
 
 void CustFrame::onClose(wxCloseEvent & evt){
-  // if(GetParent()){
+  if(GetParent()){
     GetParent()->Show();
-  // }
+  }
   evt.Skip();
   Destroy();
 }

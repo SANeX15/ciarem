@@ -27,18 +27,19 @@ void crmDB::getTbl(tbl tblName, std::string *table_name, std::string *cols, std:
   switch(tblName){
     case cust_tbl:
       *table_name = "customer";
-      *cols = "uid, name, dob";
-      *idCol = "uid";
+      if (cols) *cols = "uid, name, dob";
+      if (idCol) *idCol = "uid";
       break;
     case sv_tbl:
       *table_name = "service";
-      *cols = "id, name, price";
-      *idCol = "id";
+      if (cols) *cols = "id, name, price";
+      if (idCol) *idCol = "id";
       break;
     case scrl_tbl:
       *table_name = "scroll";
-      *cols = "id, name, doe";
-      *idCol = "id";
+      if (cols) *cols = "id, name, doe";
+      if (idCol) *idCol = "id";
+      break;
     default:
       return;
       break;
@@ -55,7 +56,7 @@ void crmDB::disconnect(std::shared_ptr<sql::Connection>& conn) {
 bool crmDB::userAuth(std::shared_ptr<sql::Connection>& conn, const std::string& uname, const std::string& passwd){
   try {
       // create a statement
-      std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement("SELECT mobile, passwd FROM user WHERE mobile='?' AND passwd='?'"));
+      std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement("SELECT mobile, passwd FROM user WHERE mobile=? AND passwd=?"));
       pstmt->setString(1, uname);
       pstmt->setString(2, passwd);
       
@@ -86,10 +87,21 @@ std::string crmDB::newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName,
   
   try {
       std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
-      for (size_t i = 0; i < values.size(); ++i) {
-          pstmt->setString(i + 1, values[i]);
-      }
-      pstmt->execute();
+      switch (tblName) {
+        case db::cust_tbl:
+          // For customers, bind the first value as a number and the rest as strings
+          pstmt->setInt64(1, std::stoll(values[0])); // UID
+          pstmt->setString(2, values[1]);             // Name
+          pstmt->setString(3, values[2]);             // DOB
+          break;
+
+        default:
+          // For all other tables (Services, Scroll), bind all values as strings
+          for (size_t i = 0; i < values.size(); ++i) {
+              pstmt->setString(i + 1, values[i]);
+          }
+          break;
+      }      pstmt->execute();
       return "";
   }
   catch (sql::SQLException e) {
@@ -97,22 +109,26 @@ std::string crmDB::newEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName,
   }
 }
 
-std::string crmDB::remEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, const long id){
+std::string crmDB::remEntry(std::shared_ptr<sql::Connection>& conn, tbl tblName, const int64_t id){
   std::string tbl_name, idCol, query;
   getTbl(tblName, &tbl_name, nullptr, &idCol);
 
-  query = "DELETE FROM ? WHERE ? = ?";
+  query = "DELETE FROM " + tbl_name + " WHERE " + idCol + " = ?";
   try {
     std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
-    pstmt->setString(1, tbl_name);
-    pstmt->setString(2, idCol);
-    pstmt->setLong(3, id);
+    switch(tblName){
+      case db::cust_tbl:
+        pstmt->setInt64(1, id);
+        break;
+      default:
+        pstmt->setInt(1, id);
+        break;
+    }
     pstmt->execute();
     return "";
   } catch (sql::SQLException e) {
     return e.what();
   }
-  return "";
 }
 
 }
