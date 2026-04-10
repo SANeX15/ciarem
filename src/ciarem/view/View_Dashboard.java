@@ -31,6 +31,7 @@ public class View_Dashboard extends JFrame {
 		Pnl_main = new JPanel(cL);
 		Pnl_nav = new JPanel();
 		Crd_Customer = new Card_Customer();
+		Btn_nav_c = new JButton("Customers");
 		
 		Pnl_main.add(Crd_Customer, "CARD_CUSTOMERS");
 		Pnl_nav.add(Btn_nav_c);

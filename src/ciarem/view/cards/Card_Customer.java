@@ -19,7 +19,7 @@ public class Card_Customer extends JPanel {
 	public Card_Customer() {
 		setLayout(new BorderLayout());
 		top = new JPanel();
-		Btn_addC = new JButton();
+		Btn_addC = new JButton("+");
 		String[] Headers = {
 				"Aadhar No.",
 				"Full Name",
