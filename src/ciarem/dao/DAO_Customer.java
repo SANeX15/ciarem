@@ -9,6 +9,7 @@ import ciarem.mdl.Mdl_Customer;
 
 public class DAO_Customer {
 	private final String insertQuery = "INSERT INTO customers (id,NAME,PHONE,DOB) VALUES (?,?,?,?);";
+	private final String updateQuery = "UPDATE customers SET NAME = ?, PHONE = ?, DOB = ? WHERE id = ?;";
 	private final String selectQuery = "SELECT * FROM customers;";
 	
 	public List<Mdl_Customer> read(){
@@ -31,6 +32,22 @@ public class DAO_Customer {
 			System.out.println("Select Failed");
 		}
 		return list;
+	}
+	
+	public boolean update(Mdl_Customer cus) {
+		try(Connection conn = DBHelper.getConnection();
+				PreparedStatement ps = conn.prepareStatement(updateQuery)){
+				
+				ps.setString(1, cus.getName());
+				ps.setString(2, cus.getPhone());
+				ps.setString(3, cus.getDob().toString());
+				ps.setString(4, cus.getID());
+				
+				return ps.executeUpdate() > 0;
+			}
+			catch(Exception e) {
+				return false;
+			}
 	}
 	
 	public boolean create(Mdl_Customer cus) {

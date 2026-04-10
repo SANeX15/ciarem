@@ -10,6 +10,7 @@ import javax.swing.text.MaskFormatter;
 import raven.datetime.DatePicker;
 
 public class View_new_Customer extends JDialog {
+	private boolean upd = false;
 	private static final long serialVersionUID = 1L;
 	private JTextField Fld_id, Fld_name, Fld_phone, Cntr_dob;
 	private DatePicker Fld_dob;
@@ -29,6 +30,19 @@ public class View_new_Customer extends JDialog {
 		pack();
 		setResizable(false);
 		setLocationRelativeTo(parent);
+	}
+	
+	public View_new_Customer(JFrame parent, String id, String name, String phone, LocalDate dob) {
+		this(parent);
+		
+		upd = true;
+		Fld_id.setText(id);
+		Fld_name.setText(name);
+		Fld_phone.setText(phone);
+		Fld_dob.setSelectedDate(dob);
+		
+		Fld_id.setEditable(false);
+		Btn_submit.setText("Update Customer");
 	}
 	
 	private void init() {
@@ -65,7 +79,7 @@ public class View_new_Customer extends JDialog {
 		Fld_dob.setEditor((JFormattedTextField) Cntr_dob);
 		Fld_dob.setDateSelectionMode(DatePicker.DateSelectionMode.SINGLE_DATE_SELECTED);
 	
-		Btn_submit = new JButton("Submit");
+		Btn_submit = new JButton("Add Customer");
 	
 		addToPanel(Pnl_main, Lbl_id, 0, 0, GridBagConstraints.NONE, 0.0);
 		addToPanel(Pnl_main, Fld_id, 0, 1, GridBagConstraints.HORIZONTAL, 1.0);
@@ -92,16 +106,30 @@ public class View_new_Customer extends JDialog {
 		jp.add(c, gbc);
 	}
 	
+	public boolean getMode() { return upd; }
+	
 	public String getId() { return Fld_id.getText(); }
+	
 	public String getName() { return Fld_name.getText(); }
+	
 	public String getPhone() { return Fld_phone.getText(); }
+	
 	public LocalDate getDob() { return Fld_dob.getSelectedDate(); }
+	
 	public JButton getBtnSubmit() { return Btn_submit; }
+	
+	
+	
 	public void killView() {
+		upd = false;
 		Fld_id.setText("");
 		Fld_name.setText("");
 		Fld_phone.setText("");
 		Fld_dob.setSelectedDate(LocalDate.now());
+
+		Fld_id.setEditable(true);
+		Btn_submit.setText("Add Customer");
+		
 		this.dispose();
 	}
 	

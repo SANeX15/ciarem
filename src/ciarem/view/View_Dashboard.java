@@ -37,7 +37,7 @@ public class View_Dashboard extends JFrame {
 		Pnl_nav.add(Btn_nav_c);
 		
 		add(Pnl_main, BorderLayout.CENTER);
-		add(Pnl_nav, BorderLayout.NORTH);
+		add(Pnl_nav, BorderLayout.WEST);
 	}
 	
 	public Card_Customer getCardCustomer() { return (Card_Customer)Crd_Customer;}

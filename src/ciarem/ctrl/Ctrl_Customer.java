@@ -22,8 +22,9 @@ public class Ctrl_Customer {
 	
 	private void saveCustomer() {
 		// save their data, i mean
+		boolean status = false;
 		Mdl_Customer customer;
-		if(InputValidator.isAadharValid(view.getId()) &&
+		if (InputValidator.isAadharValid(view.getId()) &&
 			InputValidator.isNameValid(view.getName()) &&
 			InputValidator.isDobValid(view.getDob()) &&
 			InputValidator.isPhoneValid(view.getPhone())) {
@@ -34,7 +35,11 @@ public class Ctrl_Customer {
 			JOptionPane.showMessageDialog(null, "Wrong Values are entered.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		if(dao.create(customer)) {
+		System.out.println(view.getMode());
+		if (view.getMode()) { status = dao.create(customer); }
+		else { status = dao.update(customer); }
+		
+		if (status) {
 			view.killView();
 			JOptionPane.showMessageDialog(null, "The new Customer is registered.", "Success", JOptionPane.INFORMATION_MESSAGE);
 		}
