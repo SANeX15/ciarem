@@ -35,8 +35,8 @@ public class Ctrl_Customer {
 			JOptionPane.showMessageDialog(null, "Wrong Values are entered.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		System.out.println(view.getMode());
-		if (view.getMode()) { status = dao.create(customer); }
+		
+		if (!view.getMode()) { status = dao.create(customer); }
 		else { status = dao.update(customer); }
 		
 		if (status) {
